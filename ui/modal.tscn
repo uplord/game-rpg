@@ -1,0 +1,174 @@
+[gd_scene format=3 uid="uid://dfbui7pfmu175"]
+
+[ext_resource type="Script" uid="uid://ddk7xq6cx7j1q" path="res://ui/modal.gd" id="1_modal"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
+bg_color = Color(0.055, 0.075, 0.095, 0.985)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22, 0.34, 0.45, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close"]
+bg_color = Color(0.1, 0.14, 0.18, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_hover"]
+bg_color = Color(0.16, 0.21, 0.27, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_v014y"]
+color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_mnq1s"]
+color = Color(1, 1, 1, 1)
+
+[node name="ModalLayer" type="Control" unique_id=913066556]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_modal")
+
+[node name="Scrim" type="ColorRect" parent="." unique_id=1238103926]
+mouse_filter = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.58)
+
+[node name="Center" type="Control" parent="." unique_id=1757530127]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Modal" type="PanelContainer" parent="Center" unique_id=573087732]
+mouse_filter = 0
+custom_minimum_size = Vector2(560, 400)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -200.0
+offset_right = 280.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+
+[node name="VBox" type="VBoxContainer" parent="Center/Modal" unique_id=777600780]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="MarginContainer" parent="Center/Modal/VBox" unique_id=127716094]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Center/Modal/VBox/Header" unique_id=1332041427]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Center/Modal/VBox/Header/HBoxContainer" unique_id=689648422]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Inventory"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Center/Modal/VBox/Header/HBoxContainer" unique_id=895601954]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_close")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_close_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_close_hover")
+text = "×"
+
+[node name="Separator" type="HSeparator" parent="Center/Modal/VBox" unique_id=1525670359]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_v014y")
+
+[node name="ContentScroll" type="ScrollContainer" parent="Center/Modal/VBox" unique_id=177978859]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Center/Modal/VBox/ContentScroll" unique_id=1131221343]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Content" type="VBoxContainer" parent="Center/Modal/VBox/ContentScroll/MarginContainer" unique_id=1408533157]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Description" type="Label" parent="Center/Modal/VBox/ContentScroll/MarginContainer/Content" unique_id=365008843]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Reusable modal content goes here. Inventory, Shop and Quest scenes can all use this same shell."
+autowrap_mode = 2
+
+[node name="Hint" type="Label" parent="Center/Modal/VBox/ContentScroll/MarginContainer/Content" unique_id=4214684]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.69, 0.76, 1)
+theme_override_font_sizes/font_size = 12
+text = "Close with ×, Escape, or the backdrop."
+autowrap_mode = 2
+
+[node name="FooterSeparator" type="HSeparator" parent="Center/Modal/VBox" unique_id=1572667807]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_mnq1s")
+
+[node name="Footer" type="HBoxContainer" parent="Center/Modal/VBox" unique_id=1884820794]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="Title" type="Label" parent="Center/Modal/VBox/Footer" unique_id=1353574865]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Inventory"
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Center/Modal/VBox/Footer" unique_id=810652584]
+custom_minimum_size = Vector2(32, 23)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_close")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_close_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_close_hover")
+text = "×"

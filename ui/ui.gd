@@ -16,6 +16,8 @@ const UI_MARGIN := 16
 @onready var bar_right: ColorRect = $AspectBars/Right
 @onready var bar_top: ColorRect = $AspectBars/Top
 @onready var bar_bottom: ColorRect = $AspectBars/Bottom
+@onready var modal_layer: Control = $ModalLayer
+@onready var modal_open_button: Control = $UiFrame/VBoxContainer/TopBar/MarginContainer/BoxContainer/HBoxContainer/SkillButton
 
 var _layout_update_pending := false
 var _display_scale := 1.0
@@ -27,7 +29,16 @@ func _ready() -> void:
     get_window().content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
     if not get_viewport().size_changed.is_connected(_queue_layout_update):
         get_viewport().size_changed.connect(_queue_layout_update)
+    modal_open_button.gui_input.connect(_on_modal_open_gui_input)
     _queue_layout_update()
+
+
+func _on_modal_open_gui_input(event: InputEvent) -> void:
+    if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+        modal_layer.open()
+    elif event is InputEventScreenTouch and event.pressed:
+        modal_layer.open()
+
 
 
 func _queue_layout_update() -> void:
@@ -102,6 +113,9 @@ func _apply_layout() -> void:
 
     _set_edge_margins(top_margin, margin_left, margin_top, margin_right, UI_MARGIN)
     _set_edge_margins(bottom_margin, margin_left, UI_MARGIN, margin_right, margin_bottom)
+    # Keep the modal inside the actual gameplay frame. On desktop this excludes
+    # the 16:9 black bars; on mobile game_rect is the full viewport.
+    modal_layer.resize_for_rect(game_rect)
 
 
 func _apply_aspect_bars(viewport_size: Vector2, frame_position: Vector2, frame_size: Vector2, landscape: bool) -> void:

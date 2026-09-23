@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dptytiyngvvh6"]
 
 [ext_resource type="Script" uid="uid://gajfjjfub0a2" path="res://ui/ui.gd" id="1_nb4k0"]
+[ext_resource type="PackedScene" uid="uid://dfbui7pfmu175" path="res://ui/modal.tscn" id="2_modal"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kyi0g"]
 corner_radius_top_left = 4
@@ -198,3 +199,5 @@ custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_nb4k0")
+
+[node name="ModalLayer" parent="." unique_id=825439136 instance=ExtResource("2_modal")]
