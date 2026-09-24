@@ -1,0 +1,8 @@
+{
+  "id": "area.starter_town",
+  "type": "area",
+  "display_name": "Starter Town",
+  "enabled": true,
+  "scene": "res://content/maps/starter_town/scenes/scene1.tscn",
+  "default_spawn_id": "default"
+}

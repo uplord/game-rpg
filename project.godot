@@ -15,6 +15,13 @@ run/main_scene="uid://bs6s78gxa060g"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+LocalSave="*res://services/persistence/local_save_provider.gd"
+ContentRepository="*res://services/content/local_content_repository.gd"
+GameState="*res://services/game_state/game_state.gd"
+CharacterService="*res://systems/character/character_service.gd"
+
 [display]
 
 window/size/viewport_width=1920
