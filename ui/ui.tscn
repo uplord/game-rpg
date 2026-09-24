@@ -201,3 +201,5 @@ size_flags_vertical = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_nb4k0")
 
 [node name="ModalLayer" parent="." unique_id=825439136 instance=ExtResource("2_modal")]
+visible = false
+desktop_landscape_size = Vector2(600, 600)

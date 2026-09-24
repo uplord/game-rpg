@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://d1ij8w1s0qkol"]
+
+[ext_resource type="Script" uid="uid://wub6i5g5kln2" path="res://ui/modal_content/modal_content.gd" id="1_modal_content"]
+
+[node name="ShopContent" type="MarginContainer" unique_id=1484958579]
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+script = ExtResource("1_modal_content")
+desktop_portrait_size = Vector2(420, 420)
+desktop_landscape_size = Vector2(420, 420)
+mobile_portrait_size = Vector2(420, 420)
+mobile_landscape_size = Vector2(640, 388)
+
+[node name="Content" type="VBoxContainer" parent="." unique_id=126048396]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Heading" type="Label" parent="Content" unique_id=1515054333]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Shop content scene"
+
+[node name="Body" type="Label" parent="Content" unique_id=397565070]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Your shop UI can be built in this scene. Add shop categories, item rows, prices, quantities and purchase controls here."
+autowrap_mode = 2
+
+[node name="Hint" type="Label" parent="Content" unique_id=1352625641]
+modulate = Color(0.62, 0.69, 0.76, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "ui/modal_content/shop_content.tscn"
+autowrap_mode = 2

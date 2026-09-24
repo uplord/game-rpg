@@ -17,27 +17,14 @@ enum ModalPosition { CENTER, LEFT, RIGHT, TOP, BOTTOM }
 @export var show_close_button: bool = true
 @export var animate: bool = true
 
-@export_group("Responsive Layout")
+# Responsive size/position settings live on each ModalContent scene.
+# These defaults are only used when content does not inherit ModalContent.
+const DEFAULT_DESKTOP_PORTRAIT_SIZE := Vector2(600.0, 760.0)
+const DEFAULT_DESKTOP_LANDSCAPE_SIZE := Vector2(900.0, 600.0)
+const DEFAULT_MOBILE_PORTRAIT_SIZE := Vector2(360.0, 600.0)
+const DEFAULT_MOBILE_LANDSCAPE_SIZE := Vector2(700.0, 320.0)
+const DEFAULT_MOBILE_OUTER_MARGIN := 16.0
 
-@export_subgroup("Desktop Portrait")
-@export var desktop_portrait_size: Vector2 = Vector2(600.0, 760.0)
-@export var desktop_portrait_position: ModalPosition = ModalPosition.CENTER
-
-@export_subgroup("Desktop Landscape")
-@export var desktop_landscape_size: Vector2 = Vector2(900.0, 600.0)
-@export var desktop_landscape_position: ModalPosition = ModalPosition.CENTER
-
-@export_subgroup("Mobile Portrait")
-@export var mobile_portrait_size: Vector2 = Vector2(360.0, 600.0)
-@export var mobile_portrait_position: ModalPosition = ModalPosition.CENTER
-@export var mobile_portrait_outer_margin: float = 16.0
-
-@export_subgroup("Mobile Landscape")
-@export var mobile_landscape_size: Vector2 = Vector2(700.0, 320.0)
-@export var mobile_landscape_position: ModalPosition = ModalPosition.CENTER
-@export var mobile_landscape_outer_margin: float = 16.0
-
-@export_group("")
 
 @onready var scrim: ColorRect = $Scrim
 @onready var center: Control = $Center
@@ -45,9 +32,9 @@ enum ModalPosition { CENTER, LEFT, RIGHT, TOP, BOTTOM }
 @onready var title_label: Label = $Center/Modal/VBox/Header/HBoxContainer/Title
 @onready var close_button: Button = $Center/Modal/VBox/Header/HBoxContainer/CloseButton
 @onready var content_scroll: ScrollContainer = $Center/Modal/VBox/ContentScroll
-@onready var content: VBoxContainer = $Center/Modal/VBox/ContentScroll/MarginContainer/Content
+@onready var content: VBoxContainer = $Center/Modal/VBox/ContentScroll/Content
 @onready var footer_separator: HSeparator = $Center/Modal/VBox/FooterSeparator
-@onready var footer: HBoxContainer = $Center/Modal/VBox/Footer
+@onready var footer: MarginContainer = $Center/Modal/VBox/Footer
 
 var is_open: bool = false
 var _available_size := Vector2.ZERO
@@ -60,6 +47,16 @@ var _desktop_panel_style: StyleBoxFlat
 var _resize_pending := false
 var _backdrop_armed := false
 var _active_touches: Dictionary = {}
+var _content_desktop_portrait_size := DEFAULT_DESKTOP_PORTRAIT_SIZE
+var _content_desktop_portrait_position: int = ModalPosition.CENTER
+var _content_desktop_landscape_size := DEFAULT_DESKTOP_LANDSCAPE_SIZE
+var _content_desktop_landscape_position: int = ModalPosition.CENTER
+var _content_mobile_portrait_size := DEFAULT_MOBILE_PORTRAIT_SIZE
+var _content_mobile_portrait_position: int = ModalPosition.CENTER
+var _content_mobile_portrait_outer_margin := DEFAULT_MOBILE_OUTER_MARGIN
+var _content_mobile_landscape_size := DEFAULT_MOBILE_LANDSCAPE_SIZE
+var _content_mobile_landscape_position: int = ModalPosition.CENTER
+var _content_mobile_landscape_outer_margin := DEFAULT_MOBILE_OUTER_MARGIN
 
 func _ready() -> void:
 	title_label.text = title
@@ -133,6 +130,21 @@ func open(available_size: Vector2 = Vector2.ZERO) -> void:
 	opened.emit()
 	open_changed.emit(true)
 
+	# A newly-instantiated content scene can update its minimum size on the next
+	# layout pass. Re-apply the modal bounds after that pass so the very first
+	# open uses the same settled geometry as subsequent opens.
+	call_deferred("_stabilize_open_layout")
+
+func _stabilize_open_layout() -> void:
+	await get_tree().process_frame
+	if not is_open or not visible:
+		return
+	if _has_layout_rect:
+		resize_for_rect(_layout_rect)
+	else:
+		resize_for(_available_size)
+	modal_panel.position = _panel_rest_position
+
 func close() -> void:
 	if not is_open:
 		return
@@ -153,6 +165,90 @@ func toggle(available_size: Vector2 = Vector2.ZERO) -> void:
 func set_title(value: String) -> void:
 	title = value
 
+func open_modal(header_title: String, content_scene: PackedScene, available_size: Vector2 = Vector2.ZERO) -> Node:
+	# Configure the reusable shell and its content in one call.
+	set_title(header_title)
+	var instance := set_content_scene(content_scene)
+	_apply_content_layout(instance)
+	scroll_to_top()
+	open(available_size)
+	return instance
+
+func _apply_content_layout(instance: Node) -> void:
+	# Each content scene owns its modal dimensions. This lets Inventory, Shop,
+	# Quests, etc. all use different responsive sizes from the Inspector.
+	# Avoid depending on the global class cache here. Godot can parse this script
+	# before ModalContent has been registered, especially after importing a fresh ZIP.
+	if instance != null and _has_modal_layout_properties(instance):
+		_content_desktop_portrait_size = instance.desktop_portrait_size
+		_content_desktop_portrait_position = instance.desktop_portrait_position
+		_content_desktop_landscape_size = instance.desktop_landscape_size
+		_content_desktop_landscape_position = instance.desktop_landscape_position
+		_content_mobile_portrait_size = instance.mobile_portrait_size
+		_content_mobile_portrait_position = instance.mobile_portrait_position
+		_content_mobile_portrait_outer_margin = instance.mobile_portrait_outer_margin
+		_content_mobile_landscape_size = instance.mobile_landscape_size
+		_content_mobile_landscape_position = instance.mobile_landscape_position
+		_content_mobile_landscape_outer_margin = instance.mobile_landscape_outer_margin
+	else:
+		_reset_content_layout()
+
+func _has_modal_layout_properties(instance: Object) -> bool:
+	var required := [
+		"desktop_portrait_size",
+		"desktop_portrait_position",
+		"desktop_landscape_size",
+		"desktop_landscape_position",
+		"mobile_portrait_size",
+		"mobile_portrait_position",
+		"mobile_portrait_outer_margin",
+		"mobile_landscape_size",
+		"mobile_landscape_position",
+		"mobile_landscape_outer_margin",
+	]
+	var available := {}
+	for property in instance.get_property_list():
+		available[property.name] = true
+	for property_name in required:
+		if not available.has(property_name):
+			return false
+	return true
+
+func _reset_content_layout() -> void:
+	_content_desktop_portrait_size = DEFAULT_DESKTOP_PORTRAIT_SIZE
+	_content_desktop_portrait_position = ModalPosition.CENTER
+	_content_desktop_landscape_size = DEFAULT_DESKTOP_LANDSCAPE_SIZE
+	_content_desktop_landscape_position = ModalPosition.CENTER
+	_content_mobile_portrait_size = DEFAULT_MOBILE_PORTRAIT_SIZE
+	_content_mobile_portrait_position = ModalPosition.CENTER
+	_content_mobile_portrait_outer_margin = DEFAULT_MOBILE_OUTER_MARGIN
+	_content_mobile_landscape_size = DEFAULT_MOBILE_LANDSCAPE_SIZE
+	_content_mobile_landscape_position = ModalPosition.CENTER
+	_content_mobile_landscape_outer_margin = DEFAULT_MOBILE_OUTER_MARGIN
+
+func set_text_content(body: String, hint: String = "") -> void:
+	# Lightweight demo content. Feature scenes can replace this later with
+	# set_content_scene() while keeping the same modal shell.
+	clear_content()
+
+	var body_label := Label.new()
+	body_label.text = body
+	body_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body_label.add_theme_font_size_override("font_size", 12)
+	body_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_child(body_label)
+
+	if not hint.is_empty():
+		var hint_label := Label.new()
+		hint_label.text = hint
+		hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		hint_label.add_theme_font_size_override("font_size", 12)
+		hint_label.add_theme_color_override("font_color", Color(0.62, 0.69, 0.76, 1.0))
+		hint_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		content.add_child(hint_label)
+
+	scroll_to_top()
+
 func set_content_scene(scene: PackedScene, clear_existing: bool = true) -> Node:
 	if clear_existing:
 		clear_content()
@@ -170,6 +266,7 @@ func add_content(node: Control) -> void:
 
 func clear_content() -> void:
 	for child in content.get_children():
+		content.remove_child(child)
 		child.queue_free()
 
 func set_footer_visible(value: bool) -> void:
@@ -205,8 +302,8 @@ func resize_for_rect(layout_rect: Rect2) -> void:
 	_mobile_sheet = OS.get_name() == "iOS" or OS.get_name() == "Android"
 	var is_landscape := layout_rect.size.x > layout_rect.size.y
 
-	var target := mobile_landscape_size if _mobile_sheet and is_landscape else mobile_portrait_size if _mobile_sheet else desktop_landscape_size if is_landscape else desktop_portrait_size
-	var requested_position := mobile_landscape_position if _mobile_sheet and is_landscape else mobile_portrait_position if _mobile_sheet else desktop_landscape_position if is_landscape else desktop_portrait_position
+	var target := _content_mobile_landscape_size if _mobile_sheet and is_landscape else _content_mobile_portrait_size if _mobile_sheet else _content_desktop_landscape_size if is_landscape else _content_desktop_portrait_size
+	var requested_position := _content_mobile_landscape_position if _mobile_sheet and is_landscape else _content_mobile_portrait_position if _mobile_sheet else _content_desktop_landscape_position if is_landscape else _content_desktop_portrait_position
 	target.x = maxf(1.0, target.x)
 	target.y = maxf(1.0, target.y)
 
@@ -219,7 +316,7 @@ func resize_for_rect(layout_rect: Rect2) -> void:
 
 	_panel_rest_position = modal_panel.position
 
-func _position_in_rect(rect: Rect2, panel_size: Vector2, placement: ModalPosition, margin: float) -> Vector2:
+func _position_in_rect(rect: Rect2, panel_size: Vector2, placement: int, margin: float) -> Vector2:
 	var inner := rect.grow(-margin)
 	if inner.size.x < panel_size.x:
 		inner.size.x = panel_size.x
@@ -239,14 +336,23 @@ func _position_in_rect(rect: Rect2, panel_size: Vector2, placement: ModalPositio
 			pass
 	return result
 
-func _apply_desktop_layout_rect(layout_rect: Rect2, requested_size: Vector2, placement: ModalPosition) -> void:
+func _apply_desktop_layout_rect(layout_rect: Rect2, requested_size: Vector2, placement: int) -> void:
 	const OUTER_MARGIN := 16.0
 	var usable := Vector2(maxf(1.0, layout_rect.size.x - OUTER_MARGIN * 2.0), maxf(1.0, layout_rect.size.y - OUTER_MARGIN * 2.0))
 	var target := Vector2(minf(requested_size.x, usable.x), minf(requested_size.y, usable.y))
 	modal_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	modal_panel.position = _position_in_rect(layout_rect, target, placement, OUTER_MARGIN)
-	modal_panel.size = target
 	modal_panel.custom_minimum_size = target
+	modal_panel.size = target
+
+	# Clamp the final position explicitly. This is especially important on the
+	# first open, when a freshly-instantiated content scene may have just changed
+	# the PanelContainer minimum size.
+	var panel_position := _position_in_rect(layout_rect, target, placement, OUTER_MARGIN)
+	var min_pos := layout_rect.position + Vector2(OUTER_MARGIN, OUTER_MARGIN)
+	var max_pos := layout_rect.end - Vector2(OUTER_MARGIN, OUTER_MARGIN) - target
+	panel_position.x = clampf(panel_position.x, min_pos.x, maxf(min_pos.x, max_pos.x))
+	panel_position.y = clampf(panel_position.y, min_pos.y, maxf(min_pos.y, max_pos.y))
+	modal_panel.position = panel_position
 
 func _apply_mobile_panel_style() -> void:
 	# Keep the rounded modal treatment on mobile. The margin is outside the modal,
@@ -256,7 +362,7 @@ func _apply_mobile_panel_style() -> void:
 		style.bg_color = Color(0.055, 0.075, 0.095, 1.0)
 		modal_panel.add_theme_stylebox_override("panel", style)
 
-func _apply_mobile_layout_rect(layout_rect: Rect2, requested_size: Vector2, placement: ModalPosition) -> void:
+func _apply_mobile_layout_rect(layout_rect: Rect2, requested_size: Vector2, placement: int) -> void:
 	var available_size := get_viewport().get_visible_rect().size
 	# DisplayServer returns the safe area in native window pixels, while this modal
 	# is laid out in viewport coordinates. Convert using the actual window-to-
@@ -281,7 +387,7 @@ func _apply_mobile_layout_rect(layout_rect: Rect2, requested_size: Vector2, plac
 		has_bottom_safe_inset = native_safe.end.y < int(native_window.y)
 
 	var is_landscape := available_size.x > available_size.y
-	var outer_margin := mobile_landscape_outer_margin if is_landscape else mobile_portrait_outer_margin
+	var outer_margin := _content_mobile_landscape_outer_margin if is_landscape else _content_mobile_portrait_outer_margin
 	outer_margin = maxf(0.0, outer_margin)
 
 	# Margins are per-edge. A native safe-area inset already provides spacing on

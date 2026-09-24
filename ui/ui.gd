@@ -9,6 +9,10 @@ extends CanvasLayer
 const MAX_LANDSCAPE_ASPECT := 16.0 / 9.0
 const UI_MARGIN := 16
 
+const INVENTORY_MODAL_CONTENT := preload("res://ui/modal_content/inventory_content.tscn")
+const SHOP_MODAL_CONTENT := preload("res://ui/modal_content/shop_content.tscn")
+const QUESTS_MODAL_CONTENT := preload("res://ui/modal_content/quests_content.tscn")
+
 @onready var ui_frame: Control = $UiFrame
 @onready var top_margin: MarginContainer = $UiFrame/VBoxContainer/TopBar/MarginContainer
 @onready var bottom_margin: MarginContainer = $UiFrame/VBoxContainer/BottomBar/MarginContainer
@@ -17,7 +21,9 @@ const UI_MARGIN := 16
 @onready var bar_top: ColorRect = $AspectBars/Top
 @onready var bar_bottom: ColorRect = $AspectBars/Bottom
 @onready var modal_layer: Control = $ModalLayer
-@onready var modal_open_button: Control = $UiFrame/VBoxContainer/TopBar/MarginContainer/BoxContainer/HBoxContainer/SkillButton
+@onready var modal_inventory_button: Control = $UiFrame/VBoxContainer/TopBar/MarginContainer/BoxContainer/HBoxContainer/SkillButton
+@onready var modal_shop_button: Control = $UiFrame/VBoxContainer/TopBar/MarginContainer/BoxContainer/HBoxContainer/SkillButton2
+@onready var modal_quest_button: Control = $UiFrame/VBoxContainer/TopBar/MarginContainer/BoxContainer/HBoxContainer/SkillButton3
 
 var _layout_update_pending := false
 var _display_scale := 1.0
@@ -29,16 +35,37 @@ func _ready() -> void:
     get_window().content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
     if not get_viewport().size_changed.is_connected(_queue_layout_update):
         get_viewport().size_changed.connect(_queue_layout_update)
-    modal_open_button.gui_input.connect(_on_modal_open_gui_input)
+    modal_inventory_button.gui_input.connect(_on_inventory_gui_input)
+    modal_shop_button.gui_input.connect(_on_shop_gui_input)
+    modal_quest_button.gui_input.connect(_on_quest_gui_input)
     _queue_layout_update()
 
 
-func _on_modal_open_gui_input(event: InputEvent) -> void:
-    if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-        modal_layer.open()
-    elif event is InputEventScreenTouch and event.pressed:
-        modal_layer.open()
+func _event_opens_modal(event: InputEvent) -> bool:
+    if event is InputEventMouseButton:
+        return event.button_index == MOUSE_BUTTON_LEFT and event.pressed
+    if event is InputEventScreenTouch:
+        return event.pressed
+    return false
 
+
+func _open_scene_modal(modal_title: String, content_scene: PackedScene) -> void:
+    modal_layer.open_modal(modal_title, content_scene)
+
+
+func _on_inventory_gui_input(event: InputEvent) -> void:
+    if _event_opens_modal(event):
+        _open_scene_modal("Inventory", INVENTORY_MODAL_CONTENT)
+
+
+func _on_shop_gui_input(event: InputEvent) -> void:
+    if _event_opens_modal(event):
+        _open_scene_modal("Shop", SHOP_MODAL_CONTENT)
+
+
+func _on_quest_gui_input(event: InputEvent) -> void:
+    if _event_opens_modal(event):
+        _open_scene_modal("Quests", QUESTS_MODAL_CONTENT)
 
 
 func _queue_layout_update() -> void:

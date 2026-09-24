@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://mpi2xkbyc1ji"]
+
+[ext_resource type="Script" uid="uid://wub6i5g5kln2" path="res://ui/modal_content/modal_content.gd" id="1_modal_content"]
+
+[node name="InventoryContent" type="MarginContainer" unique_id=1511284482]
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+script = ExtResource("1_modal_content")
+desktop_portrait_size = Vector2(600, 600)
+desktop_portrait_position = 4
+desktop_landscape_size = Vector2(600, 600)
+desktop_landscape_position = 2
+mobile_portrait_size = Vector2(388, 640)
+mobile_landscape_size = Vector2(640, 388)
+
+[node name="Content" type="VBoxContainer" parent="." unique_id=1980274887]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Heading" type="Label" parent="Content" unique_id=486085592]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Inventory content scene"
+
+[node name="Body" type="Label" parent="Content" unique_id=1152701809]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Your inventory UI can be built in this scene. Add item grids, equipment slots, filters and any other inventory controls here."
+autowrap_mode = 2
+
+[node name="Hint" type="Label" parent="Content" unique_id=649842534]
+modulate = Color(0.62, 0.69, 0.76, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "ui/modal_content/inventory_content.tscn"
+autowrap_mode = 2

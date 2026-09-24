@@ -3,16 +3,16 @@
 [ext_resource type="Script" uid="uid://ddk7xq6cx7j1q" path="res://ui/modal.gd" id="1_modal"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
-bg_color = Color(0.055, 0.075, 0.095, 0.985)
+bg_color = Color(0.10980392, 0.10980392, 0.11764706, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.22, 0.34, 0.45, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+border_color = Color(0.33003333, 0.33003333, 0.34580213, 0.6)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close"]
 bg_color = Color(0.1, 0.14, 0.18, 0)
@@ -29,7 +29,7 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_v014y"]
-color = Color(1, 1, 1, 1)
+color = Color(0.33003333, 0.33003333, 0.34580213, 0.6)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_mnq1s"]
 color = Color(1, 1, 1, 1)
@@ -44,7 +44,6 @@ grow_vertical = 2
 script = ExtResource("1_modal")
 
 [node name="Scrim" type="ColorRect" parent="." unique_id=1238103926]
-mouse_filter = 0
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,7 +62,6 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="Modal" type="PanelContainer" parent="Center" unique_id=573087732]
-mouse_filter = 0
 custom_minimum_size = Vector2(560, 400)
 layout_mode = 1
 anchors_preset = 8
@@ -120,51 +118,38 @@ layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="Center/Modal/VBox/ContentScroll" unique_id=1131221343]
+[node name="Content" type="VBoxContainer" parent="Center/Modal/VBox/ContentScroll" unique_id=1408533157]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
-
-[node name="Content" type="VBoxContainer" parent="Center/Modal/VBox/ContentScroll/MarginContainer" unique_id=1408533157]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/separation = 8
-
-[node name="Description" type="Label" parent="Center/Modal/VBox/ContentScroll/MarginContainer/Content" unique_id=365008843]
-layout_mode = 2
-theme_override_font_sizes/font_size = 12
-text = "Reusable modal content goes here. Inventory, Shop and Quest scenes can all use this same shell."
-autowrap_mode = 2
-
-[node name="Hint" type="Label" parent="Center/Modal/VBox/ContentScroll/MarginContainer/Content" unique_id=4214684]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.69, 0.76, 1)
-theme_override_font_sizes/font_size = 12
-text = "Close with ×, Escape, or the backdrop."
-autowrap_mode = 2
+theme_override_constants/separation = 0
 
 [node name="FooterSeparator" type="HSeparator" parent="Center/Modal/VBox" unique_id=1572667807]
+visible = false
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_mnq1s")
 
-[node name="Footer" type="HBoxContainer" parent="Center/Modal/VBox" unique_id=1884820794]
+[node name="Footer" type="MarginContainer" parent="Center/Modal/VBox" unique_id=414508183]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Center/Modal/VBox/Footer" unique_id=1884820794]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 2
 
-[node name="Title" type="Label" parent="Center/Modal/VBox/Footer" unique_id=1353574865]
+[node name="Title" type="Label" parent="Center/Modal/VBox/Footer/HBoxContainer" unique_id=1353574865]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 14
 text = "Inventory"
 vertical_alignment = 1
 
-[node name="CloseButton" type="Button" parent="Center/Modal/VBox/Footer" unique_id=810652584]
+[node name="CloseButton" type="Button" parent="Center/Modal/VBox/Footer/HBoxContainer" unique_id=810652584]
 custom_minimum_size = Vector2(32, 23)
 layout_mode = 2
 theme_override_font_sizes/font_size = 22

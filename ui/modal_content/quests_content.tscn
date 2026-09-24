@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://cgubj4j3yda2j"]
+
+[ext_resource type="Script" uid="uid://wub6i5g5kln2" path="res://ui/modal_content/modal_content.gd" id="1_modal_content"]
+
+[node name="QuestsContent" type="MarginContainer" unique_id=1374521709]
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+script = ExtResource("1_modal_content")
+desktop_portrait_size = Vector2(600, 600)
+desktop_portrait_position = 4
+desktop_landscape_size = Vector2(480, 480)
+desktop_landscape_position = 2
+mobile_portrait_size = Vector2(388, 388)
+mobile_landscape_size = Vector2(388, 388)
+
+[node name="Content" type="VBoxContainer" parent="." unique_id=1996328666]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Heading" type="Label" parent="Content" unique_id=1122025799]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Quest content scene"
+
+[node name="Body" type="Label" parent="Content" unique_id=741128393]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Your quest UI can be built in this scene. Add quest lists, objectives, progress, descriptions and rewards here."
+autowrap_mode = 2
+
+[node name="Hint" type="Label" parent="Content" unique_id=1183324086]
+modulate = Color(0.62, 0.69, 0.76, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "ui/modal_content/quests_content.tscn"
+autowrap_mode = 2
