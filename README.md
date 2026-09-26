@@ -1,4 +1,4 @@
-# Uplord Game — Stage 2 Single-Player World
+# Uplord Game — Phase 3 Core UI
 
 This build keeps the Stage 1 local-only architecture and adds the first playable world layer.
 
@@ -18,3 +18,7 @@ This build keeps the Stage 1 local-only architecture and adds the first playable
 Run the project. Move with WASD/arrows or click/tap the world. Walk through the right-side Starter Town gate to enter Starter Forest, then use the left-side forest gate to return.
 
 Firebase, networking, multiplayer rooms and remote players remain intentionally absent.
+
+
+## Roadmap
+See `ROADMAP.md` for the updated use-based skill-progression roadmap.

@@ -1,0 +1,1 @@
+{"id":"item.iron_armour","type":"item","item_id":"iron_armour","name":"Iron Armour","description":"Heavy iron protection.","category":"armour","order":80,"stackable":false,"equipment_slot":"armour","requirements":[{"skill":"defence","level":10}],"actions":["equip"]}

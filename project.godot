@@ -21,6 +21,8 @@ LocalSave="*res://services/persistence/local_save_provider.gd"
 ContentRepository="*res://services/content/local_content_repository.gd"
 GameState="*res://services/game_state/game_state.gd"
 CharacterService="*res://systems/character/character_service.gd"
+SkillProgression="*res://systems/progression/skill_progression_service.gd"
+ItemService="*res://systems/items/item_service.gd"
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 
 [display]

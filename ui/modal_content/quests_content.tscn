@@ -10,9 +10,9 @@ theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
 script = ExtResource("1_modal_content")
 desktop_portrait_size = Vector2(600, 600)
-desktop_portrait_position = 4
+desktop_portrait_position = 0
 desktop_landscape_size = Vector2(480, 480)
-desktop_landscape_position = 2
+desktop_landscape_position = 0
 mobile_portrait_size = Vector2(388, 388)
 mobile_landscape_size = Vector2(388, 388)
 

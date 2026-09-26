@@ -1,0 +1,1 @@
+{"id":"item.bronze_pickaxe","type":"item","item_id":"bronze_pickaxe","name":"Bronze Pickaxe","description":"A basic pickaxe used for Mining.","category":"tool","order":30,"stackable":false,"equipment_slot":"main_hand","tool_type":"pickaxe","tool_tier":1,"requirements":[{"skill":"mining","level":1}],"actions":["equip"]}

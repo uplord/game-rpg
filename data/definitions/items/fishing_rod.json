@@ -1,0 +1,1 @@
+{"id":"item.fishing_rod","type":"item","item_id":"fishing_rod","name":"Fishing Rod","description":"A simple rod used at fishing spots.","category":"tool","order":60,"stackable":false,"equipment_slot":"main_hand","tool_type":"fishing_rod","tool_tier":1,"requirements":[{"skill":"fishing","level":1}],"actions":["equip"]}

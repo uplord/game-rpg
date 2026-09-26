@@ -1,0 +1,1 @@
+{"id":"skill.woodcutting","type":"skill","skill_id":"woodcutting","name":"Woodcutting","description":"Improves by chopping trees and gathering timber.","order":40,"enabled":true,"unlocks":[{"level":1,"name":"Common trees"},{"level":10,"name":"Oak trees"},{"level":25,"name":"Willow trees"},{"level":40,"name":"Ancient trees"}]}

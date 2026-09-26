@@ -1,0 +1,1 @@
+{"id":"skill.mining","type":"skill","skill_id":"mining","name":"Mining","description":"Improves by mining rocks and ore deposits.","order":30,"enabled":true,"unlocks":[{"level":1,"name":"Copper ore"},{"level":5,"name":"Tin ore"},{"level":15,"name":"Iron ore"},{"level":25,"name":"Coal"},{"level":40,"name":"Mithril ore"}]}

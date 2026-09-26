@@ -69,6 +69,7 @@ position = Vector2(900, 790)
 position = Vector2(3380, 790)
 
 [node name="Bounds" type="Node2D" parent="." unique_id=479757953]
+scale = Vector2(1.0202391, 1.1712828)
 
 [node name="Top" type="StaticBody2D" parent="Bounds" unique_id=699983428]
 position = Vector2(1920, 40)

@@ -1,0 +1,1 @@
+{"id":"skill.defence","type":"skill","skill_id":"defence","name":"Defence","description":"Improves through combat and unlocks stronger defensive equipment.","order":20,"enabled":true,"unlocks":[{"level":1,"name":"Basic armour"},{"level":5,"name":"Guard"},{"level":10,"name":"Iron armour"},{"level":20,"name":"Fortify"}]}

@@ -1,0 +1,1 @@
+{"id":"item.traveller_tunic","type":"item","item_id":"traveller_tunic","name":"Traveller Tunic","description":"Light protection for a new adventurer.","category":"armour","order":70,"stackable":false,"equipment_slot":"armour","requirements":[{"skill":"defence","level":1}],"actions":["equip"]}

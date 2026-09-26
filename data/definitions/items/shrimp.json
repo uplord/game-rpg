@@ -1,0 +1,1 @@
+{"id":"item.shrimp","type":"item","item_id":"shrimp","name":"Shrimp","description":"A small cooked fish. Consumable behaviour arrives with production/combat systems.","category":"food","order":90,"stackable":true,"requirements":[],"actions":[]}

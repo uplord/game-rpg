@@ -1,0 +1,1 @@
+{"id":"skill.attack","type":"skill","skill_id":"attack","name":"Attack","description":"Improves by using melee weapons and abilities.","order":10,"enabled":true,"unlocks":[{"level":1,"name":"Basic melee weapons"},{"level":5,"name":"Heavy Strike"},{"level":10,"name":"Iron weapons"},{"level":20,"name":"Whirlwind"}]}

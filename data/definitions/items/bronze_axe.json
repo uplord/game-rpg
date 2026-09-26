@@ -1,0 +1,1 @@
+{"id":"item.bronze_axe","type":"item","item_id":"bronze_axe","name":"Bronze Axe","description":"A basic axe used for Woodcutting.","category":"tool","order":50,"stackable":false,"equipment_slot":"main_hand","tool_type":"axe","tool_tier":1,"requirements":[{"skill":"woodcutting","level":1}],"actions":["equip"]}

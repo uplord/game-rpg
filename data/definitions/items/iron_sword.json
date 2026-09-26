@@ -1,0 +1,1 @@
+{"id":"item.iron_sword","type":"item","item_id":"iron_sword","name":"Iron Sword","description":"A sturdier sword requiring trained Attack.","category":"weapon","order":20,"stackable":false,"equipment_slot":"main_hand","weapon_type":"sword","requirements":[{"skill":"attack","level":10}],"actions":["equip"]}

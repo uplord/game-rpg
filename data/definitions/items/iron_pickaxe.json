@@ -1,0 +1,1 @@
+{"id":"item.iron_pickaxe","type":"item","item_id":"iron_pickaxe","name":"Iron Pickaxe","description":"A stronger pickaxe for higher-level rocks.","category":"tool","order":40,"stackable":false,"equipment_slot":"main_hand","tool_type":"pickaxe","tool_tier":2,"requirements":[{"skill":"mining","level":10}],"actions":["equip"]}

@@ -1,0 +1,1 @@
+{"id":"skill.fishing","type":"skill","skill_id":"fishing","name":"Fishing","description":"Improves by catching fish at fishing spots.","order":50,"enabled":true,"unlocks":[{"level":1,"name":"Small fish"},{"level":10,"name":"River fish"},{"level":25,"name":"Lobster"},{"level":40,"name":"Deep-water fish"}]}

@@ -9,6 +9,7 @@ const DEFAULT_SPAWN_ID := "default"
 var character: Dictionary = {}
 var progression: Dictionary = {}
 var inventory: Array = []
+var bank: Array = []
 var equipment: Dictionary = {}
 var learned_skills: Array = []
 var skill_loadouts: Dictionary = {}
@@ -41,6 +42,7 @@ func to_save_data() -> Dictionary:
 		"character": character.duplicate(true),
 		"progression": progression.duplicate(true),
 		"inventory": inventory.duplicate(true),
+		"bank": bank.duplicate(true),
 		"equipment": equipment.duplicate(true),
 		"learned_skills": learned_skills.duplicate(true),
 		"skill_loadouts": skill_loadouts.duplicate(true),
@@ -66,16 +68,21 @@ func _apply_new_game_defaults() -> void:
 		"max_mana": 100,
 	}
 	progression = {
-		"combat": {"level": 1, "xp": 0},
+		"attack": {"level": 1, "xp": 0},
+		"defence": {"level": 1, "xp": 0},
 		"mining": {"level": 1, "xp": 0},
 		"woodcutting": {"level": 1, "xp": 0},
 		"fishing": {"level": 1, "xp": 0},
-		"smithing": {"level": 1, "xp": 0},
-		"cooking": {"level": 1, "xp": 0},
-		"woodworking": {"level": 1, "xp": 0},
-		"crafting": {"level": 1, "xp": 0},
 	}
-	inventory = []
+	inventory = [
+		{"item_id": "bronze_sword", "quantity": 1},
+		{"item_id": "bronze_pickaxe", "quantity": 1},
+		{"item_id": "bronze_axe", "quantity": 1},
+		{"item_id": "fishing_rod", "quantity": 1},
+		{"item_id": "traveller_tunic", "quantity": 1},
+		{"item_id": "shrimp", "quantity": 5},
+	]
+	bank = []
 	equipment = {}
 	learned_skills = []
 	skill_loadouts = {
@@ -94,8 +101,25 @@ func _apply_new_game_defaults() -> void:
 func _apply_save(saved: Dictionary) -> void:
 	_apply_new_game_defaults()
 	character.merge(saved.get("character", {}), true)
-	progression.merge(saved.get("progression", {}), true)
+	var saved_progression: Dictionary = saved.get("progression", {}).duplicate(true)
+	# Phase 4 migration: older local saves used one combat skill. Preserve that
+	# progress as Attack while Defence starts independently.
+	if saved_progression.has("combat") and not saved_progression.has("attack"):
+		saved_progression["attack"] = saved_progression["combat"].duplicate(true)
+	progression.merge(saved_progression, true)
 	inventory = saved.get("inventory", []).duplicate(true)
+	# Phase 5 migration: Phase 4 saves had no bank field and no item system.
+	# Seed the starter kit once for those saves without overwriting later inventories.
+	if not saved.has("bank") and inventory.is_empty():
+		inventory = [
+			{"item_id": "bronze_sword", "quantity": 1},
+			{"item_id": "bronze_pickaxe", "quantity": 1},
+			{"item_id": "bronze_axe", "quantity": 1},
+			{"item_id": "fishing_rod", "quantity": 1},
+			{"item_id": "traveller_tunic", "quantity": 1},
+			{"item_id": "shrimp", "quantity": 5},
+		]
+	bank = saved.get("bank", []).duplicate(true)
 	equipment.merge(saved.get("equipment", {}), true)
 	learned_skills = saved.get("learned_skills", []).duplicate(true)
 	skill_loadouts.merge(saved.get("skill_loadouts", {}), true)

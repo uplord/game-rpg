@@ -1,0 +1,1 @@
+{"id":"item.copper_ore","type":"item","item_id":"copper_ore","name":"Copper Ore","description":"Ore gathered from copper rocks.","category":"resource","order":100,"stackable":true,"requirements":[],"actions":[]}

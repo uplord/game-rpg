@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/modal_content/skills_content.gd" id="1"]
+
+[node name="SkillsContent" type="MarginContainer"]
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+script = ExtResource("1")
+desktop_portrait_size = Vector2(600, 760)
+desktop_landscape_size = Vector2(560, 640)
+mobile_portrait_size = Vector2(388, 650)
+mobile_landscape_size = Vector2(600, 320)
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Heading" type="Label" parent="Content"]
+layout_mode = 2
+text = "Skills"
+theme_override_font_sizes/font_size = 20
+
+[node name="Description" type="Label" parent="Content"]
+layout_mode = 2
+text = "Skills improve by using them. Higher levels unlock new activities, equipment and abilities."
+autowrap_mode = 2
+
+[node name="Summary" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+
+[node name="TotalLevel" type="Label" parent="Content/Summary"]
+layout_mode = 2
+text = "Total level  5"
+theme_override_font_sizes/font_size = 16
+
+[node name="Spacer" type="Control" parent="Content/Summary"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Cap" type="Label" parent="Content/Summary"]
+layout_mode = 2
+text = "Max 99 per skill"
+
+[node name="Scroll" type="ScrollContainer" parent="Content"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SkillList" type="VBoxContainer" parent="Content/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
