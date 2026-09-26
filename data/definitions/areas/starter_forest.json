@@ -1,0 +1,9 @@
+{
+  "id": "area.starter_forest",
+  "type": "area",
+  "display_name": "Starter Forest",
+  "enabled": true,
+  "scene": "res://content/maps/starter_forest/scenes/scene1.tscn",
+  "default_spawn_id": "default",
+  "bounds": [0, 0, 3840, 1080]
+}

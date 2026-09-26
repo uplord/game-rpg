@@ -7,6 +7,8 @@ extends CanvasLayer
 # - portrait uses the complete logical viewport
 # - the safe area only insets the UI frame; child controls keep authored sizes
 const MAX_LANDSCAPE_ASPECT := 16.0 / 9.0
+const BASE_DESKTOP_UI_SIZE := Vector2(1920.0, 1080.0)
+const BASE_DESKTOP_PORTRAIT_UI_SIZE := Vector2(1080.0, 1920.0)
 const UI_MARGIN := 16
 
 const INVENTORY_MODAL_CONTENT := preload("res://ui/modal_content/inventory_content.tscn")
@@ -16,6 +18,8 @@ const QUESTS_MODAL_CONTENT := preload("res://ui/modal_content/quests_content.tsc
 @onready var ui_frame: Control = $UiFrame
 @onready var top_margin: MarginContainer = $UiFrame/VBoxContainer/TopBar/MarginContainer
 @onready var bottom_margin: MarginContainer = $UiFrame/VBoxContainer/BottomBar/MarginContainer
+@onready var bottom_bar: Control = $UiFrame/VBoxContainer/BottomBar
+@onready var bottom_background: ColorRect = $UiFrame/VBoxContainer/BottomBar/ColorRect
 @onready var bar_left: ColorRect = $AspectBars/Left
 @onready var bar_right: ColorRect = $AspectBars/Right
 @onready var bar_top: ColorRect = $AspectBars/Top
@@ -38,7 +42,22 @@ func _ready() -> void:
     modal_inventory_button.gui_input.connect(_on_inventory_gui_input)
     modal_shop_button.gui_input.connect(_on_shop_gui_input)
     modal_quest_button.gui_input.connect(_on_quest_gui_input)
+    _configure_world_click_passthrough(ui_frame)
     _queue_layout_update()
+
+
+func _configure_world_click_passthrough(node: Node) -> void:
+    # Layout Controls/Containers should not swallow clicks intended for the
+    # world. Actual PanelContainer HUD buttons remain interactive and stop the
+    # event, matching the reference game's gui_get_hovered_control() behaviour.
+    if node is Control:
+        var control := node as Control
+        if control is PanelContainer:
+            control.mouse_filter = Control.MOUSE_FILTER_STOP
+        else:
+            control.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    for child in node.get_children():
+        _configure_world_click_passthrough(child)
 
 
 func _event_opens_modal(event: InputEvent) -> bool:
@@ -122,9 +141,54 @@ func _apply_layout() -> void:
     if usable_rect.size.x <= 0.0 or usable_rect.size.y <= 0.0:
         usable_rect = game_rect
 
+    # Desktop HUD uses 1920x1080 *physical screen pixels* as its 1.0 reference.
+    # The previous UI already applies DisplayServer.screen_get_scale() through
+    # Window.content_scale_factor. Therefore using the logical viewport size here
+    # would scale the UI a second time on Retina/HiDPI displays (for example a
+    # 1920x1080 physical gameplay frame can be 960x540 logical at 2x display scale).
+    # Convert the gameplay frame back to physical pixels before deriving the
+    # additional desktop UI scale. This preserves the exact pre-scaling UI size at
+    # 1920x1080 while still scaling proportionally at other desktop resolutions.
+    var ui_scale := 1.0
+    if not mobile:
+        var physical_game_size := game_rect.size * _display_scale
+        # Desktop portrait uses the same scale rule as desktop landscape, with
+        # the 1920x1080 reference rotated to 1080x1920. This prevents a portrait
+        # desktop window from being treated like a narrow 1920-wide canvas and
+        # making the HUD much smaller than the equivalent landscape resolution.
+        var desktop_base_size := BASE_DESKTOP_UI_SIZE if landscape else BASE_DESKTOP_PORTRAIT_UI_SIZE
+        ui_scale = minf(
+            physical_game_size.x / desktop_base_size.x,
+            physical_game_size.y / desktop_base_size.y
+        )
+        ui_scale = maxf(ui_scale, 0.01)
+
     ui_frame.set_anchors_preset(Control.PRESET_TOP_LEFT)
+    ui_frame.scale = Vector2.ONE * ui_scale
     ui_frame.position = usable_rect.position
-    ui_frame.size = usable_rect.size
+    ui_frame.size = usable_rect.size / ui_scale
+
+    # The solid bottom HUD is a portrait-only surface. Its rendered height is
+    # reserved from the world camera's scaling area so the map is fitted to the
+    # gameplay space above the HUD instead of the complete portrait viewport.
+    bottom_background.visible = not landscape
+    # UiFrame stops at the safe-area bottom. Extend only the portrait background
+    # through the home-indicator inset so there is no uncovered strip below the
+    # solid HUD; the buttons themselves remain inside the safe area.
+    var safe_bottom_for_hud := maxf(0.0, game_rect.end.y - usable_rect.end.y)
+
+    # The authored BottomBar is 80 px high, while its actual controls occupy the
+    # lower 64 px. Desktop portrait intentionally keeps the full 80 px treatment,
+    # but on mobile that unused 16 px reads as extra padding above the white bar.
+    # Start the mobile portrait background at the controls instead and reserve only
+    # that visible 64 px from the camera. The safe-area extension remains below it.
+    var mobile_portrait_top_trim := 16.0 if mobile and not landscape else 0.0
+    bottom_background.offset_top = mobile_portrait_top_trim
+    bottom_background.offset_bottom = safe_bottom_for_hud / ui_scale if not landscape else 0.0
+    var portrait_hud_height := (bottom_bar.size.y - mobile_portrait_top_trim) * ui_scale if not landscape else 0.0
+    var world := get_node_or_null("../World")
+    if world != null and world.has_method("set_portrait_hud_height"):
+        world.set_portrait_hud_height(portrait_hud_height)
 
     # UiFrame is already inset to the device safe area. Do not add the normal
     # UI margin again on an edge that already has a non-zero safe-area inset.
@@ -140,9 +204,14 @@ func _apply_layout() -> void:
 
     _set_edge_margins(top_margin, margin_left, margin_top, margin_right, UI_MARGIN)
     _set_edge_margins(bottom_margin, margin_left, UI_MARGIN, margin_right, margin_bottom)
-    # Keep the modal inside the actual gameplay frame. On desktop this excludes
-    # the 16:9 black bars; on mobile game_rect is the full viewport.
-    modal_layer.resize_for_rect(game_rect)
+    # Scale desktop modals from the same 1920x1080 reference as the HUD. Keep
+    # their layout coordinates local to the gameplay frame so pillarbox/letterbox
+    # bars never become part of the modal's available area.
+    modal_layer.set_anchors_preset(Control.PRESET_TOP_LEFT)
+    modal_layer.scale = Vector2.ONE * ui_scale
+    modal_layer.position = game_rect.position
+    modal_layer.size = game_rect.size / ui_scale
+    modal_layer.resize_for_rect(Rect2(Vector2.ZERO, modal_layer.size))
 
 
 func _apply_aspect_bars(viewport_size: Vector2, frame_position: Vector2, frame_size: Vector2, landscape: bool) -> void:

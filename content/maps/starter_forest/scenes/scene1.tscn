@@ -1,0 +1,114 @@
+[gd_scene format=3 uid="uid://c0q7ti7auuiba"]
+
+[ext_resource type="Script" uid="uid://btxqyso4vrme6" path="res://systems/world/area_transition.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="Sky"]
+bg_color = Color(0.36, 0.68, 0.9, 1)
+
+[sub_resource type="StyleBoxFlat" id="Ground"]
+bg_color = Color(0.1, 0.27, 0.15, 1)
+
+[sub_resource type="StyleBoxFlat" id="Path"]
+bg_color = Color(0.3, 0.29, 0.2, 1)
+
+[sub_resource type="RectangleShape2D" id="WallH"]
+size = Vector2(3840, 80)
+
+[sub_resource type="RectangleShape2D" id="WallV"]
+size = Vector2(80, 1080)
+
+[sub_resource type="RectangleShape2D" id="Exit"]
+size = Vector2(120, 320)
+
+[node name="StarterForest" type="Node2D" unique_id=2054208327]
+
+[node name="Sky" type="Panel" parent="."]
+offset_left = -180.0
+offset_top = -1200.0
+offset_right = 4020.0
+offset_bottom = 0.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Sky")
+
+[node name="Ground" type="Panel" parent="." unique_id=702614409]
+offset_left = -180.0
+offset_top = 0.0
+offset_right = 4020.0
+offset_bottom = 1200.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Ground")
+
+[node name="Path" type="Panel" parent="." unique_id=735927368]
+offset_left = -180.0
+offset_top = 650.0
+offset_right = 4020.0
+offset_bottom = 930.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Path")
+
+[node name="Title" type="Label" parent="." unique_id=1825282962]
+offset_left = 80.0
+offset_top = 90.0
+offset_right = 373.0
+offset_bottom = 151.0
+theme_override_font_sizes/font_size = 44
+text = "Starter Forest"
+
+[node name="Hint" type="Label" parent="." unique_id=1817309200]
+offset_left = 80.0
+offset_top = 150.0
+offset_right = 877.0
+offset_bottom = 184.0
+theme_override_font_sizes/font_size = 24
+text = "Stage 2 test area  •  Walk back through the left gate to return to town"
+
+[node name="Spawns" type="Node2D" parent="." unique_id=2066893094]
+
+[node name="default" type="Marker2D" parent="Spawns" unique_id=1715214193]
+position = Vector2(900, 790)
+
+[node name="from_town" type="Marker2D" parent="Spawns" unique_id=1477206306]
+position = Vector2(380, 790)
+
+[node name="Bounds" type="Node2D" parent="." unique_id=135494601]
+
+[node name="Top" type="StaticBody2D" parent="Bounds" unique_id=644172091]
+position = Vector2(1920, 40)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Top" unique_id=558702157]
+shape = SubResource("WallH")
+
+[node name="Bottom" type="StaticBody2D" parent="Bounds" unique_id=1146246422]
+position = Vector2(1920, 1040)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Bottom" unique_id=1223687555]
+shape = SubResource("WallH")
+
+[node name="LeftTop" type="StaticBody2D" parent="Bounds" unique_id=713123461]
+position = Vector2(40, 300)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/LeftTop" unique_id=1457143355]
+shape = SubResource("WallV")
+
+[node name="LeftBottom" type="StaticBody2D" parent="Bounds" unique_id=1371099194]
+position = Vector2(40, 940)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/LeftBottom" unique_id=1203057086]
+shape = SubResource("WallV")
+
+[node name="Right" type="StaticBody2D" parent="Bounds" unique_id=1759653378]
+position = Vector2(3800, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Right" unique_id=575226462]
+shape = SubResource("WallV")
+
+[node name="Transitions" type="Node2D" parent="." unique_id=1954837198]
+
+[node name="TownGate" type="Area2D" parent="Transitions" unique_id=775302115]
+position = Vector2(180, 700)
+script = ExtResource("1")
+destination_area_id = "area.starter_town"
+destination_spawn_id = "from_forest"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/TownGate" unique_id=911496613]
+shape = SubResource("Exit")

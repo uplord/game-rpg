@@ -1,3 +1,112 @@
 [gd_scene format=3 uid="uid://wysife0ut2ad"]
 
-[node name="Scene1" type="Node2D" unique_id=1499252801]
+[ext_resource type="Script" uid="uid://btxqyso4vrme6" path="res://systems/world/area_transition.gd" id="1"]
+
+[sub_resource type="StyleBoxFlat" id="Sky"]
+bg_color = Color(0.36, 0.68, 0.9, 1)
+
+[sub_resource type="StyleBoxFlat" id="Ground"]
+bg_color = Color(0.19, 0.34, 0.23, 1)
+
+[sub_resource type="StyleBoxFlat" id="Path"]
+bg_color = Color(0.46, 0.39, 0.28, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5rxie"]
+size = Vector2(3840, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dahql"]
+size = Vector2(80, 1080)
+
+[sub_resource type="RectangleShape2D" id="Exit"]
+size = Vector2(120, 320)
+
+[node name="StarterTown" type="Node2D" unique_id=157298343]
+
+[node name="Sky" type="Panel" parent="." unique_id=1588326198]
+offset_left = -180.0
+offset_top = -1200.0
+offset_right = 4020.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Sky")
+
+[node name="Ground" type="Panel" parent="." unique_id=272543287]
+offset_left = -180.0
+offset_right = 4020.0
+offset_bottom = 1200.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Ground")
+
+[node name="Path" type="Panel" parent="." unique_id=299948012]
+offset_left = -180.0
+offset_top = 650.0
+offset_right = 4020.0
+offset_bottom = 930.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Path")
+
+[node name="Title" type="Label" parent="." unique_id=1035424563]
+offset_left = 80.0
+offset_top = 90.0
+offset_right = 355.0
+offset_bottom = 151.0
+theme_override_font_sizes/font_size = 44
+text = "Starter Town"
+
+[node name="Hint" type="Label" parent="." unique_id=1285066896]
+offset_left = 80.0
+offset_top = 150.0
+offset_right = 964.0
+offset_bottom = 184.0
+theme_override_font_sizes/font_size = 24
+text = "WASD / arrows or click & hold to move  •  Walk through the gate to the forest"
+
+[node name="Spawns" type="Node2D" parent="." unique_id=1592954789]
+
+[node name="default" type="Marker2D" parent="Spawns" unique_id=672778196]
+position = Vector2(900, 790)
+
+[node name="from_forest" type="Marker2D" parent="Spawns" unique_id=921653783]
+position = Vector2(3380, 790)
+
+[node name="Bounds" type="Node2D" parent="." unique_id=479757953]
+
+[node name="Top" type="StaticBody2D" parent="Bounds" unique_id=699983428]
+position = Vector2(1920, 40)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Top" unique_id=1464812744]
+shape = SubResource("RectangleShape2D_5rxie")
+
+[node name="Bottom" type="StaticBody2D" parent="Bounds" unique_id=488567071]
+position = Vector2(1920, 1040)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Bottom" unique_id=1911167274]
+shape = SubResource("RectangleShape2D_5rxie")
+
+[node name="LeftTop" type="StaticBody2D" parent="Bounds" unique_id=207119193]
+position = Vector2(40, 300)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/LeftTop" unique_id=1038182061]
+shape = SubResource("RectangleShape2D_dahql")
+
+[node name="LeftBottom" type="StaticBody2D" parent="Bounds" unique_id=885846373]
+position = Vector2(40, 940)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/LeftBottom" unique_id=471429753]
+shape = SubResource("RectangleShape2D_dahql")
+
+[node name="Right" type="StaticBody2D" parent="Bounds" unique_id=1876738076]
+position = Vector2(3800, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds/Right" unique_id=428175326]
+shape = SubResource("RectangleShape2D_dahql")
+
+[node name="Transitions" type="Node2D" parent="." unique_id=1865179287]
+
+[node name="ForestGate" type="Area2D" parent="Transitions" unique_id=433421365]
+position = Vector2(3660, 700)
+script = ExtResource("1")
+destination_area_id = "area.starter_forest"
+destination_spawn_id = "from_town"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Transitions/ForestGate" unique_id=682403458]
+shape = SubResource("Exit")
